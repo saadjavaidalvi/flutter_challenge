@@ -8,6 +8,7 @@ class MyCapsuleButton extends StatelessWidget {
     this.backgroundColor,
     this.borderRadius,
     this.onTap,
+    this.isLoading = false,
   });
 
   final String text;
@@ -15,6 +16,7 @@ class MyCapsuleButton extends StatelessWidget {
   final Color? backgroundColor;
   final BorderRadius? borderRadius;
   final Function? onTap;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -28,13 +30,21 @@ class MyCapsuleButton extends StatelessWidget {
         style: const ButtonStyle(),
         child: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: Text(
-            text,
-            style: textStyle ??
-                const TextStyle(
-                  color: Colors.white,
+          child: isLoading
+              ? const SizedBox(
+                  height: 20,
+                  width: 20,
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                )
+              : Text(
+                  text,
+                  style: textStyle ??
+                      const TextStyle(
+                        color: Colors.white,
+                      ),
                 ),
-          ),
         ),
       ),
     );

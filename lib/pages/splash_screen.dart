@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_challenge/middlewares/get_breeds.dart';
+import 'package:flutter_challenge/middlewares/dog_breeds.dart';
 import 'package:flutter_challenge/pages/home_screen.dart';
+import 'package:flutter_challenge/utils/assets_strings.dart';
 
 class SpashScreen extends StatefulWidget {
   const SpashScreen({super.key});
@@ -26,14 +27,16 @@ class _SpashScreenState extends State<SpashScreen> {
   Widget build(BuildContext context) {
     return !isLoading
         ? HomeScreen(breadsData)
-        : const Scaffold(
+        : Scaffold(
             body: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    CircularProgressIndicator(),
+                    Image.asset(
+                      AssetString().runningDogGif,
+                    ),
                   ],
                 ),
               ],
