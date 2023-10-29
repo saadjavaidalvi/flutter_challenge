@@ -136,9 +136,10 @@ class _DogsGalleryPageState extends State<DogsGalleryPage> {
                     Expanded(
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          image,
+                        child: CachedNetworkImage(
+                          imageUrl: image,
                           fit: BoxFit.fitWidth,
+                          placeholder: (context, url) => const Skeleton(),
                         ),
                       ),
                     ),
