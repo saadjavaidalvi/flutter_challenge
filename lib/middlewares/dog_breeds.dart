@@ -5,11 +5,11 @@ import 'package:flutter_challenge/utils/http_wrapper.dart';
 import 'package:http/http.dart' as http;
 
 class DogBreeds {
-  /// Get list of all of the breeds of dogs
+  /// Get Map for of all of the breeds of dogs
   Future<Map> getAllBreeds() async {
     http.Response response = await CustomHttp().get(
       Uri.parse(
-        'https://dog.ceo/api/breeds/list/all',
+        CustomUrls.allBreedList,
       ),
     );
 
@@ -33,7 +33,9 @@ class DogBreeds {
     );
 
     if (response.statusCode == 200) {
-      Map responseBody = jsonDecode(response.body);
+      Map responseBody = jsonDecode(
+        response.body,
+      );
       if (responseBody['message'] is String) {
         return responseBody['message'];
       }
@@ -43,7 +45,7 @@ class DogBreeds {
     }
   }
 
-  /// Get random image from a specific breed
+  /// Get random image from a specific sub-breed
   Future<String> getRandomSubBreedPicture(String breed, String subBreed) async {
     http.Response response = await CustomHttp().get(
       Uri.parse(
@@ -62,7 +64,7 @@ class DogBreeds {
     }
   }
 
-  /// Get list of all of the images by breed
+  /// Get list of all of the images by a breed
   Future<List> getBreedAllImages(String breed) async {
     http.Response response = await CustomHttp().get(
       Uri.parse(
@@ -81,7 +83,7 @@ class DogBreeds {
     }
   }
 
-  /// Get list of all of the breeds of dogs
+  /// Get list of all of the images by sub-breed
   Future<List> getsubBreedAllImages(String breed, String subBreed) async {
     http.Response response = await CustomHttp().get(
       Uri.parse(

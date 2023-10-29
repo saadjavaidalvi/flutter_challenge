@@ -3,11 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_challenge/middlewares/dog_breeds.dart';
 import 'package:flutter_challenge/pages/dogs_gallery_page.dart';
 import 'package:flutter_challenge/utils/assets_strings.dart';
+import 'package:flutter_challenge/utils/custom_strings.dart';
 import 'package:flutter_challenge/utils/helper_methods.dart';
 import 'package:flutter_challenge/widgets/capsule_button.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen(this.breadsData, {super.key});
+  const HomeScreen(
+    this.breadsData, {
+    super.key,
+  });
   final Map breadsData;
 
   @override
@@ -15,9 +19,9 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String selectedValue = 'data 0';
-  String selectedSubBreed = 'Chosse Sub Breed';
-  String subBreedSelectOptionString = 'Select sub-breed';
+  String selectedValue = '';
+  String selectedSubBreed = '';
+  late final String subBreedSelectOptionString;
   List<String> breadsList = [];
   bool randomButtonLoading = false;
   bool showAllButtonLoading = false;
@@ -25,6 +29,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
+    subBreedSelectOptionString = CustomStrigns().selectSubbreedOptionText;
 
     breadsList = widget.breadsData.keys.toList() as List<String>;
     selectedValue = breadsList.first;
@@ -50,21 +55,21 @@ class _HomeScreenState extends State<HomeScreen> {
           backgroundColor: Colors.transparent,
           appBar: AppBar(
             backgroundColor: Colors.transparent,
-            title: const Text(
-              'We Love Dogs',
+            title: Text(
+              CustomStrigns().homeScreenAppbarText.toUpperCase(),
             ),
           ),
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(
+              Padding(
+                padding: const EdgeInsets.symmetric(
                   vertical: 8.0,
                   horizontal: 16,
                 ),
                 child: Text(
-                  'Select the below options for a randon or a list of images by breed and sub-breed',
-                  style: TextStyle(
+                  CustomStrigns().homescreenTitleText,
+                  style: const TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
                   ),
@@ -99,10 +104,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget selectBreed() {
     return Column(
       children: [
-        const Padding(
-          padding: EdgeInsets.all(8.0),
+        Padding(
+          padding: const EdgeInsets.all(8.0),
           child: Text(
-            'Select a breed of dog from below',
+            CustomStrigns().selectBreedText,
           ),
         ),
         Row(
@@ -143,14 +148,14 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         (widget.breadsData[selectedValue.toLowerCase()] as List).isEmpty
-            ? const Padding(
-                padding: EdgeInsets.symmetric(
+            ? Padding(
+                padding: const EdgeInsets.symmetric(
                   vertical: 8.0,
                   horizontal: 24,
                 ),
                 child: Text(
-                  '*This breed has no sub-breed',
-                  style: TextStyle(
+                  CustomStrigns().noSubbreedText,
+                  style: const TextStyle(
                     color: Colors.grey,
                     fontSize: 14,
                   ),
@@ -183,10 +188,10 @@ class _HomeScreenState extends State<HomeScreen> {
         ? Container()
         : Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.all(8.0),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
                 child: Text(
-                  'Select a sub breed of dog (Optional)',
+                  CustomStrigns().selectSubbreedText,
                 ),
               ),
               Row(
@@ -252,7 +257,7 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: MyCapsuleButton(
                 isLoading: randomButtonLoading,
-                text: 'Get a Random Image'.toUpperCase(),
+                text: CustomStrigns().getRandomImageButtonText.toUpperCase(),
                 onTap: () async {
                   setState(() {
                     randomButtonLoading = true;
@@ -295,15 +300,15 @@ class _HomeScreenState extends State<HomeScreen> {
                               child: CachedNetworkImage(
                                 height: 200,
                                 imageUrl: respone,
-                                fadeOutDuration: Duration(seconds: 0),
-                                fadeInDuration: Duration(seconds: 0),
+                                fadeOutDuration: const Duration(seconds: 0),
+                                fadeInDuration: const Duration(seconds: 0),
                                 placeholder: (context, url) => Image.asset(
                                   AssetString().runningDogGif,
                                   height: 50,
                                   width: 50,
                                 ),
                                 errorWidget: (context, url, error) =>
-                                    Icon(Icons.error),
+                                    const Icon(Icons.error),
                               ),
                             )
                           ],
@@ -336,7 +341,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           Expanded(
             child: MyCapsuleButton(
-              text: 'Show All Images'.toUpperCase(),
+              text: CustomStrigns().showAllImageButtonText.toUpperCase(),
               onTap: () {
                 String? subbreed =
                     !isSubBreedSelected() ? null : selectedSubBreed;

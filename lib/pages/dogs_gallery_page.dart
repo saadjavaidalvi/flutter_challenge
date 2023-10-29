@@ -1,6 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_challenge/middlewares/dog_breeds.dart';
+import 'package:flutter_challenge/utils/custom_strings.dart';
 
+/// A Gallery Page for the dog where you can view all of the dogs pictures
+///
+/// You can scale each image by tapping on the them
+///
+/// the [subbreed] is an optional field
 class DogsGalleryPage extends StatefulWidget {
   const DogsGalleryPage({
     super.key,
@@ -22,10 +28,13 @@ class _DogsGalleryPageState extends State<DogsGalleryPage> {
   @override
   void initState() {
     super.initState();
-    getData();
+    imagesMiddlwareCall();
   }
 
-  getData() async {
+  /// Calls for the list to images
+  ///
+  /// Furthure it handle which endpoint to call based if sub-breed is provided or not
+  Future<void> imagesMiddlwareCall() async {
     List rerponseList = [];
     if (widget.subbreed != null && widget.subbreed!.isNotEmpty) {
       rerponseList = await DogBreeds()
@@ -46,105 +55,95 @@ class _DogsGalleryPageState extends State<DogsGalleryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          'Gallery'.toUpperCase(),
+          CustomStrigns().galleryTitle.toUpperCase(),
         ),
       ),
       body: isLoading
-          ? const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(
-                      color: Colors.black,
-                    ),
-                  ],
-                ),
-              ],
-            )
+          ? loadingState()
           : GridView.builder(
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
               ),
               itemCount: imagesList.length,
               itemBuilder: (context, index) {
-                return Hero(
-                  tag: imagesList[index],
-                  child: GestureDetector(
-                    onTap: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => Stack(
-                          children: [
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.pop(context);
-                              },
-                              child: Container(
-                                color: Colors.black.withOpacity(.5),
-                              ),
-                            ),
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(8),
-                                          child: Image.network(
-                                            imagesList[index],
-                                            fit: BoxFit.fitWidth,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.network(
-                          imagesList[index],
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                    ),
-                  ),
-                );
+                return gridViewItem(imagesList[index]);
               },
             ),
     );
   }
-}
 
-class DogImage extends StatelessWidget {
-  const DogImage({
-    super.key,
-    required this.image,
-  });
-  final String image;
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Hero(
-        tag: image,
-        child: Image.asset(
-          image,
-          fit: BoxFit.fitWidth,
+  Widget loadingState() {
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            CircularProgressIndicator(
+              color: Colors.black,
+            ),
+          ],
         ),
+      ],
+    );
+  }
+
+  Widget gridViewItem(String image) {
+    return Hero(
+      tag: image,
+      child: GestureDetector(
+        onTap: () {
+          onTapActionForGridView(image);
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              image,
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  void onTapActionForGridView(String image) {
+    showDialog(
+      context: context,
+      builder: (context) => Stack(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pop(context);
+            },
+            child: Container(
+              color: Colors.black.withOpacity(.5),
+            ),
+          ),
+          Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          image,
+                          fit: BoxFit.fitWidth,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
