@@ -40,6 +40,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        backgroundWidget(),
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            title: Text(
+              CustomStrigns().homeScreenAppbarText.toUpperCase(),
+            ),
+          ),
+          body: bodyWidget(),
+        ),
+      ],
+    );
+  }
+
+  Widget backgroundWidget() {
+    return Stack(
+      children: [
         SizedBox(
           height: MediaQuery.of(context).size.height,
           child: Image.asset(
@@ -51,51 +69,45 @@ class _HomeScreenState extends State<HomeScreen> {
           height: MediaQuery.of(context).size.height,
           color: Colors.white.withOpacity(.95),
         ),
-        Scaffold(
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            backgroundColor: Colors.transparent,
-            title: Text(
-              CustomStrigns().homeScreenAppbarText.toUpperCase(),
+      ],
+    );
+  }
+
+  Widget bodyWidget() {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            vertical: 8.0,
+            horizontal: 16,
+          ),
+          child: Text(
+            CustomStrigns().homescreenTitleText,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w500,
             ),
+            textAlign: TextAlign.center,
           ),
-          body: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  vertical: 8.0,
-                  horizontal: 16,
-                ),
-                child: Text(
-                  CustomStrigns().homescreenTitleText,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
-              Column(
-                children: [
-                  selectBreed(),
-                  Container(
-                    height: 24,
-                  ),
-                  selectSubBreed(),
-                ],
-              ),
-              Column(
-                children: [
-                  randomButton(),
-                  showAllButton(),
-                  Container(
-                    height: 40,
-                  )
-                ],
-              ),
-            ],
-          ),
+        ),
+        Column(
+          children: [
+            selectBreed(),
+            Container(
+              height: 24,
+            ),
+            selectSubBreed(),
+          ],
+        ),
+        Column(
+          children: [
+            randomButton(),
+            showAllButton(),
+            Container(
+              height: 40,
+            )
+          ],
         ),
       ],
     );
@@ -167,24 +179,11 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  List<String> handleSubBreedSelectLogic(List breedsData) {
-    List<String> subBreedsList = [];
-    for (var i = 0; i < breedsData.length; i++) {
-      subBreedsList.add(breedsData[i]);
-    }
-    if (subBreedsList.isNotEmpty) {
-      if (subBreedsList[0] != subBreedSelectOptionString) {
-        subBreedsList.insert(0, subBreedSelectOptionString);
-      }
-    }
-
-    return subBreedsList;
-  }
-
   Widget selectSubBreed() {
     List<String> subBreedsListWithSelectOption = handleSubBreedSelectLogic(
         (widget.breadsData[selectedValue.toLowerCase()] as List));
-    return (widget.breadsData[selectedValue.toLowerCase()] as List).isEmpty
+
+    return !hasSubbreeds()
         ? Container()
         : Column(
             children: [
@@ -263,60 +262,21 @@ class _HomeScreenState extends State<HomeScreen> {
                     randomButtonLoading = true;
                   });
 
-                  String respone = '';
+                  String imageUrl = '';
                   if (isSubBreedSelected()) {
-                    respone = await DogBreeds().getRandomSubBreedPicture(
+                    imageUrl = await DogBreeds().getRandomSubBreedPicture(
                         selectedValue, selectedSubBreed);
                   } else {
-                    respone =
+                    imageUrl =
                         await DogBreeds().getRandomBreedPicture(selectedValue);
                   }
                   setState(() {
                     randomButtonLoading = false;
                   });
-                  if (respone.isEmpty) {
+                  if (imageUrl.isEmpty) {
                     return;
                   }
-                  // ignore: use_build_context_synchronously
-                  showDialog(
-                    builder: (context) => Dialog(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              '${HelperMethods().capitalize(selectedValue)} ${isSubBreedSelected() ? "($selectedSubBreed)" : ''}',
-                              textAlign: TextAlign.center,
-                            ),
-                            Container(
-                              height: 12,
-                            ),
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: CachedNetworkImage(
-                                height: 200,
-                                imageUrl: respone,
-                                fadeOutDuration: const Duration(seconds: 0),
-                                fadeInDuration: const Duration(seconds: 0),
-                                placeholder: (context, url) => Image.asset(
-                                  AssetString().runningDogGif,
-                                  height: 50,
-                                  width: 50,
-                                ),
-                                errorWidget: (context, url, error) =>
-                                    const Icon(Icons.error),
-                              ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                    context: context,
-                  );
+                  randomDogPictureDialouge(imageUrl);
                 },
               ),
             ),
@@ -326,6 +286,50 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  /// A function that pop ups the dialoug to show a random picture of dog
+  void randomDogPictureDialouge(String imageUrl) {
+    // ignore: use_build_context_synchronously
+    showDialog(
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
+        child: Container(
+          padding: const EdgeInsets.all(12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                '${HelperMethods().capitalize(selectedValue)} ${isSubBreedSelected() ? "($selectedSubBreed)" : ''}',
+                textAlign: TextAlign.center,
+              ),
+              Container(
+                height: 12,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(12),
+                child: CachedNetworkImage(
+                  height: 200,
+                  imageUrl: imageUrl,
+                  fadeOutDuration: const Duration(seconds: 0),
+                  fadeInDuration: const Duration(seconds: 0),
+                  placeholder: (context, url) => Image.asset(
+                    AssetString().runningDogGif,
+                    height: 50,
+                    width: 50,
+                  ),
+                  errorWidget: (context, url, error) => const Icon(Icons.error),
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+      context: context,
+    );
+  }
+
+  /// This function check if a sub-breed is selected or not
   bool isSubBreedSelected() {
     if (selectedSubBreed == subBreedSelectOptionString) {
       return false;
@@ -334,6 +338,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return true;
   }
 
+  /// A button that will lead to the gallery containing images for dogs
   Widget showAllButton() {
     return Padding(
       padding: const EdgeInsets.all(12.0),
@@ -359,5 +364,25 @@ class _HomeScreenState extends State<HomeScreen> {
         ],
       ),
     );
+  }
+
+  /// This is to add an extra String item in the DropDown for sub breed
+  /// that would be the default value
+  List<String> handleSubBreedSelectLogic(List breedsData) {
+    List<String> subBreedsList = [];
+    for (var i = 0; i < breedsData.length; i++) {
+      subBreedsList.add(breedsData[i]);
+    }
+    if (subBreedsList.isNotEmpty) {
+      if (subBreedsList[0] != subBreedSelectOptionString) {
+        subBreedsList.insert(0, subBreedSelectOptionString);
+      }
+    }
+
+    return subBreedsList;
+  }
+
+  bool hasSubbreeds() {
+    return (widget.breadsData[selectedValue.toLowerCase()] as List).isNotEmpty;
   }
 }

@@ -8,6 +8,6 @@ class CustomStrigns {
   final selectSubbreedText = 'Select a sub breed of dog (Optional)';
   final selectSubbreedOptionText = 'Select sub-breed';
   final noSubbreedText = '*This breed has no sub-breed';
-  final getRandomImageButtonText = '';
-  final showAllImageButtonText = '';
+  final getRandomImageButtonText = 'Get Random Image';
+  final showAllImageButtonText = 'Show All Images';
 }

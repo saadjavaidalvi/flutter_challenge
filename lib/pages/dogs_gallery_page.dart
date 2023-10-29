@@ -1,6 +1,8 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_challenge/middlewares/dog_breeds.dart';
 import 'package:flutter_challenge/utils/custom_strings.dart';
+import 'package:flutter_challenge/utils/skeleton_loading.dart';
 
 /// A Gallery Page for the dog where you can view all of the dogs pictures
 ///
@@ -99,9 +101,11 @@ class _DogsGalleryPageState extends State<DogsGalleryPage> {
           padding: const EdgeInsets.all(8.0),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(
-              image,
-              fit: BoxFit.cover,
+            child: CachedNetworkImage(
+              imageUrl: image,
+              placeholder: (context, url) => const Skeleton(),
+              errorWidget: (context, url, error) =>
+                  const Icon(Icons.broken_image_outlined),
             ),
           ),
         ),
