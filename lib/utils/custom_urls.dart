@@ -1,7 +1,7 @@
 class CustomUrls {
   static String baseUrl = 'https://dog.ceo/api/breed';
 
-  static String allBreedList = '$baseUrl/list/all';
+  static String allBreedList = '${baseUrl}s/list/all';
 
   static String randomBreedimage(String breed) {
     return '$baseUrl/${breed.toLowerCase()}/images/random';

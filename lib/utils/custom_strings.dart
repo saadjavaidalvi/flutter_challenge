@@ -1,6 +1,7 @@
 class CustomStrigns {
   final String galleryTitle = 'Gallery';
   final homeScreenAppbarText = 'we love dogs';
+  final String noBreedDataString = 'No breeds available for now :(';
   final homescreenTitleText =
       'Select the below options for a randon or a list of images by breed and sub-breed';
 

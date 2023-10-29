@@ -22,7 +22,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String selectedValue = '';
   String selectedSubBreed = '';
   late final String subBreedSelectOptionString;
-  List<String> breadsList = [];
+  List breadsList = [];
   bool randomButtonLoading = false;
   bool showAllButtonLoading = false;
 
@@ -31,8 +31,10 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     subBreedSelectOptionString = CustomStrigns().selectSubbreedOptionText;
 
-    breadsList = widget.breadsData.keys.toList() as List<String>;
-    selectedValue = breadsList.first;
+    breadsList = widget.breadsData.keys.toList();
+    if (breadsList.isNotEmpty) {
+      selectedValue = breadsList.first;
+    }
     selectedSubBreed = subBreedSelectOptionString;
   }
 
@@ -91,24 +93,34 @@ class _HomeScreenState extends State<HomeScreen> {
             textAlign: TextAlign.center,
           ),
         ),
-        Column(
-          children: [
-            selectBreed(),
-            Container(
-              height: 24,
-            ),
-            selectSubBreed(),
-          ],
-        ),
-        Column(
-          children: [
-            randomButton(),
-            showAllButton(),
-            Container(
-              height: 40,
-            )
-          ],
-        ),
+        widget.breadsData.isEmpty
+            ? Column(
+                children: [
+                  Text(
+                    CustomStrigns().noBreedDataString,
+                  )
+                ],
+              )
+            : Column(
+                children: [
+                  selectBreed(),
+                  Container(
+                    height: 24,
+                  ),
+                  selectSubBreed(),
+                ],
+              ),
+        widget.breadsData.isEmpty
+            ? Container()
+            : Column(
+                children: [
+                  randomButton(),
+                  showAllButton(),
+                  Container(
+                    height: 40,
+                  )
+                ],
+              ),
       ],
     );
   }
