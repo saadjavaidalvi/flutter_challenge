@@ -386,8 +386,10 @@ class _HomeScreenState extends State<HomeScreen> {
       subBreedsList.add(breedsData[i]);
     }
     if (subBreedsList.isNotEmpty) {
-      if (subBreedsList[0] != subBreedSelectOptionString) {
+      if (subBreedsList.length > 1) {
         subBreedsList.insert(0, subBreedSelectOptionString);
+      } else {
+        selectedSubBreed = HelperMethods().capitalize(subBreedsList.first);
       }
     }
 
